@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infimizer - Advanced AI & Data Science Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #f7f9fc;
+            color: #2d3748;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0C1B1F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        .preloader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .preloader span {
+            color: #FFFFFF;
+            font-size: 2rem;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        header {
+            background: #0C1B1F;
+            color: #FFFFFF;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #FFFFFF;
+            transition: transform 0.3s ease;
+        }
+        .hamburger:hover {
+            transform: rotate(90deg);
+        }
+        nav {
+            background: #FFFFFF;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2.5rem;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .nav-links li {
+            position: relative;
+        }
+        .nav-links a {
+            color: #2d3748;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+            position: relative;
+            border-radius: 5px;
+        }
+        .nav-links a:hover {
+            color: #0C1B1F;
+            transform: translateY(-2px);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #0C1B1F;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 70%;
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            min-width: 180px;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dropdown-content a:hover {
+            background-color: #e0f7fa;
+            color: #0C1B1F;
+        }
+        .nav-links.active {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            background-color: #FFFFFF;
+            flex-direction: column;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            justify-content: flex-start;
+            gap: 2.5rem;
+            z-index: 999;
+        }
+        .nav-links.active .dropdown-content {
+            position: static;
+            box-shadow: none;
+            transform: none;
+            opacity: 1;
+            display: none;
+            background-color: #f7f9fc;
+            border-radius: 5px;
+        }
+        .nav-links.active .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .nav-links.active a {
+            font-size: 1.4rem;
+            padding: 0.75rem 1.5rem;
+        }
+        .hero {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: #0C1B1F;
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 2%, transparent 3%);
+            background-size: 20px 20px;
+            animation: particleFlow 10s linear infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        @keyframes particleFlow {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+            color: #FFFFFF;
+            display: inline-block;
+        }
+        .hero h2 .typing-text {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .hero h2 .typing-text span {
+            opacity: 0;
+            animation: fadeInChar 0.05s forwards;
+        }
+        .hero h2 .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 2.5rem;
+            background: #FFFFFF;
+            vertical-align: middle;
+            animation: blink 0.7s infinite;
+            margin-left: 2px;
+        }
+        @keyframes fadeInChar {
+            to { opacity: 1; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .hero h2.glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 5px #FFFFFF; }
+            50% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 15px #FFFFFF, 0 0 25px #e0f7fa; }
+        }
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+            color: #FFFFFF;
+        }
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .icon-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .icon-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        .icon-box i {
+            font-size: 2rem;
+            color: #FFFFFF;
+        }
+        .icon-box span {
+            font-size: 0.9rem;
+            color: #FFFFFF;
+            margin-top: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .services, .updates {
+            padding: 5rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .services h2, .updates h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #0C1B1F;
+        }
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .service-card {
+            background-color: #FFFFFF;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .service-card h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0C1B1F;
+            margin-bottom: 1rem;
+        }
+        .service-card p {
+            font-size: 1rem;
+            color: #4a5568;
+        }
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .filters button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #e0f7fa;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .filters button:hover {
+            background-color: #0C1B1F;
+            color: #FFFFFF;
+        }
+        .updates .carousel {
+            position: relative;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .update-card {
+            min-width: 100%;
+            background-color: #FFFFFF;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .update-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .update-card h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0C1B1F;
+            margin-bottom: 1rem;
+        }
+        .update-card p {
+            font-size: 1rem;
+            color: #4a5568;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .carousel-btn.prev {
+            left: 1rem;
+        }
+        .carousel-btn.next {
+            right: 1rem;
+        }
+        .contact {
+            padding: 5rem 2rem;
+            background: #0C1B1F;
+            color: #FFFFFF;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 2%, transparent 3%);
+            background-size: 20px 20px;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .contact-content {
+            position: relative;
+            z-index: 1;
+        }
+        .contact h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #FFFFFF;
+        }
+        .contact form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .contact input, .contact textarea {
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, border 0.3s ease;
+            border: 2px solid transparent;
+            background-color: #FFFFFF;
+            color: #2d3748;
+        }
+        .contact input:focus, .contact textarea:focus {
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border-color: #FFFFFF;
+        }
+        .contact textarea {
+            resize: none;
+            min-height: 150px;
+        }
+        .contact .error {
+            border-color: #ff4d4d;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        .contact .feedback {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            text-align: left;
+            margin-top: -0.5rem;
+            display: none;
+        }
+        .contact button {
+            padding: 1rem;
+            background-color: #FFFFFF;
+            color: #0C1B1F;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .contact button:hover {
+            background-color: #e0f7fa;
+            transform: scale(1.02);
+        }
+        .contact button::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            top: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        .contact button:hover::after {
+            width: 100%;
+        }
+        .success-message {
+            display: none;
+            color: #00cc00;
+            font-weight: 600;
+            margin-top: 1rem;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        footer {
+            padding: 2rem;
+            background-color: #0C1B1F;
+            color: #FFFFFF;
+            text-align: center;
+        }
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        .social-links a {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: color 0.3s ease;
+        }
+        .social-links a:hover {
+            color: #e0f7fa;
+        }
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            .logo-img {
+                width: 30px;
+                height: 30px;
+            }
+            .hamburger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links.active a {
+                font-size: 1.4rem;
+            }
+            .hero {
+                padding: 3rem 1rem;
+            }
+            .hero h2 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .icon-container {
+                flex-wrap: wrap;
+                gap: 1.5rem;
+            }
+            .icon-box {
+                width: 60px;
+                height: 60px;
+            }
+            .icon-box i {
+                font-size: 1.5rem;
+            }
+            .icon-box span {
+                font-size: 0.8rem;
+            }
+            .services, .updates, .contact {
+                padding: 3rem 1rem;
+            }
+            .services h2, .updates h2, .contact h2 {
+                font-size: 1.8rem;
+            }
+            .service-card h3, .update-card h3 {
+                font-size: 1.3rem;
+            }
+            .service-card p, .update-card p {
+                font-size: 0.9rem;
+            }
+            .filters {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .contact form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preloader">
+        <span>Loading...</span>
+    </div>
+    <header>
+        <div class="logo">
+            <img src="1.jpg" alt="Infimizer Logo" class="logo-img">
+            <h1>Infimizer</h1>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#updates">Updates</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="dropdown">
+                    <a href="#">More <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#">About Us</a>
+                        <a href="#">Our Team</a>
+                        <a href="#">Careers</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <section id="home" class="hero">
+        <h2 id="welcome-text"><span class="typing-text"></span><span class="cursor"></span></h2>
+        <p>Infimizer is a forward-thinking technology company specializing in Artificial Intelligence (AI), Machine Learning (ML), Deep Learning (DL), Natural Language Processing (NLP), Computing, and Data Science. We deliver cutting-edge solutions that empower businesses, fuel innovation, and drive measurable progress across industries.</p>
+        <div class="icon-container">
+            <div class="icon-box">
+                <i class="fas fa-flask"></i>
+                <span>Research</span>
+            </div>
+            <div class="icon-box">
+                <i class="fas fa-users"></i>
+                <span>Collaboration</span>
+            </div>
+            <div class="icon-box">
+                <i class="fas fa-briefcase"></i>
+                <span>Business</span>
+            </div>
+        </div>
+    </section>
+    <section id="services" class="services">
+        <h2>Our Services</h2>
+        <div class="filters">
+            <button onclick="filterServices('all')">All</button>
+            <button onclick="filterServices('ai')">AI</button>
+            <button onclick="filterServices('ml')">ML</button>
+            <button onclick="filterServices('dl')">DL</button>
+            <button onclick="filterServices('nlp')">NLP</button>
+            <button onclick="filterServices('research')">Research</button>
+            <button onclick="filterServices('ds')">Data Science</button>
+        </div>
+        <div class="service-grid">
+            <div class="service-card" data-category="ai">
+                <h3>Artificial Intelligence</h3>
+                <p>Developing intelligent systems to automate processes and enhance decision-making.</p>
+            </div>
+            <div class="service-card" data-category="ml">
+                <h3>Machine Learning</h3>
+                <p>Crafting predictive models to uncover insights and optimize outcomes.</p>
+            </div>
+            <div class="service-card" data-category="dl">
+                <h3>Deep Learning</h3>
+                <p>Harnessing neural networks for complex problem-solving and innovation.</p>
+            </div>
+            <div class="service-card" data-category="nlp">
+                <h3>Natural Language Processing</h3>
+                <p>Building solutions for seamless language understanding and generation.</p>
+            </div>
+            <div class="service-card" data-category="research">
+                <h3>Research & Computing</h3>
+                <p>Advancing computational research to push technological boundaries.</p>
+            </div>
+            <div class="service-card" data-category="ds">
+                <h3>Data Science</h3>
+                <p>Transforming data into actionable insights for strategic growth.</p>
+            </div>
+        </div>
+    </section>
+    <section id="updates" class="updates">
+        <h2>Recent Updates</h2>
+        <div class="carousel">
+            <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
+            <div class="carousel-inner">
+                <div class="update-card">
+                    <h3>AI-Powered Automation</h3>
+                    <p>Launched a new AI tool to streamline business workflows, reducing operational costs by 20%. (April 2025)</p>
+                </div>
+                <div class="update-card">
+                    <h3>NLP Breakthrough</h3>
+                    <p>Developed an advanced NLP model for real-time sentiment analysis, improving accuracy by 15%. (March 2025)</p>
+                </div>
+                <div class="update-card">
+                    <h3>Data Science Research</h3>
+                    <p>Published a paper on scalable data processing techniques in a leading journal. (February 2025)</p>
+                </div>
+            </div>
+            <button class="carousel-btn next" onclick="moveCarousel(1)">❯</button>
+        </div>
+    </section>
+    <section id="contact" class="contact">
+        <div class="contact-content">
+            <h2>Get in Touch</h2>
+            <form id="contactForm">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <div class="feedback" id="nameFeedback">Please enter your name.</div>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <div class="feedback" id="emailFeedback">Please enter a valid email address.</div>
+                <textarea id="message" placeholder="Your Message" rows="6" required></textarea>
+                <div class="feedback" id="messageFeedback">Please enter your message.</div>
+                <button type="submit">Send Message</button>
+                <div class="success-message" id="successMessage">Message sent successfully! We will get back to you soon.</div>
+            </form>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Infimizer. All Rights Reserved.</p>
+            <div class="social-links">
+                <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        window.addEventListener('load', () => {
+            const preloader = document.querySelector('.preloader');
+            preloader.classList.add('hidden');
+
+            // Typing animation for "Welcome to Infimizer"
+            const text = "Welcome to Infimizer";
+            const typingText = document.querySelector('.typing-text');
+            const cursor = document.querySelector('.cursor');
+            let index = 0;
+
+            function type() {
+                if (index < text.length) {
+                    const char = text[index];
+                    const span = document.createElement('span');
+                    span.textContent = char;
+                    span.style.animationDelay = `${index * 0.05}s`;
+                    typingText.appendChild(span);
+                    index++;
+                    setTimeout(type, 100);
+                } else {
+                    setTimeout(() => {
+                        cursor.style.display = 'none';
+                        document.getElementById('welcome-text').classList.add('glow');
+                    }, 500);
+                }
+            }
+
+            setTimeout(type, 500); // Start typing after preloader
+        });
+
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        let slideIndex = 0;
+        function moveCarousel(direction) {
+            const carouselInner = document.querySelector('.carousel-inner');
+            const cards = document.querySelectorAll('.update-card');
+            slideIndex += direction;
+            if (slideIndex >= cards.length) slideIndex = 0;
+            if (slideIndex < 0) slideIndex = cards.length - 1;
+            carouselInner.style.transform = `translateX(-${slideIndex * 100}%)`;
+        }
+        setInterval(() => moveCarousel(1), 5000);
+
+        function filterServices(category) {
+            const cards = document.querySelectorAll('.service-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const nameFeedback = document.getElementById('nameFeedback');
+            const emailFeedback = document.getElementById('emailFeedback');
+            const messageFeedback = document.getElementById('messageFeedback');
+            const successMessage = document.getElementById('successMessage');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            let isValid = true;
+
+            if (!name) {
+                nameFeedback.style.display = 'block';
+                document.getElementById('name').classList.add('error');
+                isValid = false;
+            } else {
+                nameFeedback.style.display = 'none';
+                document.getElementById('name').classList.remove('error');
+            }
+
+            if (!email || !emailRegex.test(email)) {
+                emailFeedback.style.display = 'block';
+                document.getElementById('email').classList.add('error');
+                isValid = false;
+            } else {
+                emailFeedback.style.display = 'none';
+                document.getElementById('email').classList.remove('error');
+            }
+
+            if (!message) {
+                messageFeedback.style.display = 'block';
+                document.getElementById('message').classList.add('error');
+                isValid = false;
+            } else {
+                messageFeedback.style.display = 'none';
+                document.getElementById('message').classList.remove('error');
+            }
+
+            if (isValid) {
+                const mailtoLink = `mailto:contact@infimizer.com?subject=Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}\n\nEmail: ${encodeURIComponent(email)}`;
+                window.location.href = mailtoLink;
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                    document.getElementById('name').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('message').value = '';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
